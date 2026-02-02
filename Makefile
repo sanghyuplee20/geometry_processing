@@ -1,4 +1,4 @@
-COMPILER ?= gcc
+COMPILER ?= gcc-15
 #COMPILER ?= clang
 
 programs = OneRingSmoothing

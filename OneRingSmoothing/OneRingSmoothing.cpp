@@ -30,6 +30,7 @@ DAMAGE.
 
 #include <Misha/CmdLineParser.h>
 #include "DynamicMeshViewer.h"
+#include <set>
 
 using namespace MishaK;
 using namespace MishaK::AdvancedGraphics;
@@ -95,10 +96,32 @@ struct OneRingSmoothingViewer : public DynamicMeshViewer
 	{
 		if( _smoothSignal )
 		{
-			//////////////////////////////////////
-			// [IMPLEMENT VALUE SMOOTHING HERE] //
-			MK_WARN_ONCE( "Value smoothing not imlpemented" );
-			//////////////////////////////////////
+			// build adjacency list for now 
+			std::vector<std::set<unsigned int>> neighbors(_mesh.vertices.size());
+			for (auto triangle : _mesh.triangles) {
+				neighbors[triangle[0]].insert({triangle[1], triangle[2]});
+				neighbors[triangle[1]].insert({triangle[0], triangle[2]});
+				neighbors[triangle[2]].insert({triangle[0], triangle[1]});
+			}
+
+			// update the values
+			std::vector<double> nextValues(_mesh.values.size());
+			double lambda = 0.2;
+
+			for (int i = 0; i < _mesh.values.size(); i++) {
+				double summed = 0;
+
+				// sum up all the adjacents
+				for (const unsigned int& neighbor: neighbors[i]) {
+					summed += _mesh.values[neighbor];
+				}
+
+				// average it out and subtract mesh value to find delta phi
+				double avg = summed / neighbors[i].size();
+				nextValues[i] = _mesh.values[i] + lambda * (avg - _mesh.values[i]);
+			}
+			_mesh.values = nextValues;
+			
 		}
 		else
 		{

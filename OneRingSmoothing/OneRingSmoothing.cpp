@@ -29,6 +29,7 @@ DAMAGE.
 #include "PreProcessing.h"
 
 #include <Misha/CmdLineParser.h>
+#include <Misha/Geometry.h>
 #include "DynamicMeshViewer.h"
 #include <set>
 
@@ -94,16 +95,16 @@ struct OneRingSmoothingViewer : public DynamicMeshViewer
 	// Performs the averaging of the geometry/signal
 	void animate( void )
 	{
+		// build adjacency list for now 
+		std::vector<std::set<unsigned int>> neighbors(_mesh.vertices.size());
+		for (auto triangle : _mesh.triangles) {
+			neighbors[triangle[0]].insert({triangle[1], triangle[2]});
+			neighbors[triangle[1]].insert({triangle[0], triangle[2]});
+			neighbors[triangle[2]].insert({triangle[0], triangle[1]});
+		}
+
 		if( _smoothSignal )
 		{
-			// build adjacency list for now 
-			std::vector<std::set<unsigned int>> neighbors(_mesh.vertices.size());
-			for (auto triangle : _mesh.triangles) {
-				neighbors[triangle[0]].insert({triangle[1], triangle[2]});
-				neighbors[triangle[1]].insert({triangle[0], triangle[2]});
-				neighbors[triangle[2]].insert({triangle[0], triangle[1]});
-			}
-
 			// update the values
 			std::vector<double> nextValues(_mesh.values.size());
 			double lambda = 0.2;
@@ -125,10 +126,33 @@ struct OneRingSmoothingViewer : public DynamicMeshViewer
 		}
 		else
 		{
-			///////////////////////////////////////
-			// [IMPLEMENT VERTEX SMOOTHING HERE] //
-			MK_WARN_ONCE( "Vertex smoothing not imlpemented" );
-			///////////////////////////////////////
+			// update the vertices
+			std::vector< Point< double , (unsigned int)3U >> nextVertices(_mesh.vertices.size());
+			double lambda = 0.2;
+
+			for (int i = 0; i < _mesh.vertices.size(); i++) {
+				double summed_x = 0;
+				double summed_y = 0;
+				double summed_z = 0;
+
+				// sum up all the adjacents
+				for (const unsigned int& neighbor: neighbors[i]) {
+					summed_x += _mesh.vertices[neighbor][0];
+					summed_y += _mesh.vertices[neighbor][1];
+					summed_z += _mesh.vertices[neighbor][2];
+				}
+
+				// average it out and subtract mesh value to find d_lta phi
+				double avg_x = summed_x / (double) neighbors[i].size();
+				double avg_y = summed_y / (double) neighbors[i].size();
+				double avg_z = summed_z / (double) neighbors[i].size();
+
+				nextVertices[i][0] = _mesh.vertices[i][0] + lambda * (avg_x - _mesh.vertices[i][0]);
+				nextVertices[i][1] = _mesh.vertices[i][1] + lambda * (avg_y - _mesh.vertices[i][1]);
+				nextVertices[i][2] = _mesh.vertices[i][2] + lambda * (avg_z - _mesh.vertices[i][2]);
+			}
+			_mesh.vertices = nextVertices;
+
 		}
 		visualizationNeedsUpdating();
 	}

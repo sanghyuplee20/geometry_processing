@@ -103,11 +103,13 @@ struct OneRingSmoothingViewer : public DynamicMeshViewer
 			neighbors[triangle[2]].insert({triangle[0], triangle[1]});
 		}
 
+		// set lambda
+		double lambda = 1;
+
 		if( _smoothSignal )
 		{
 			// update the values
 			std::vector<double> nextValues(_mesh.values.size());
-			double lambda = 0.2;
 
 			for (int i = 0; i < _mesh.values.size(); i++) {
 				double summed = 0;
@@ -128,7 +130,7 @@ struct OneRingSmoothingViewer : public DynamicMeshViewer
 		{
 			// update the vertices
 			std::vector< Point< double , (unsigned int)3U >> nextVertices(_mesh.vertices.size());
-			double lambda = 0.2;
+
 
 			for (int i = 0; i < _mesh.vertices.size(); i++) {
 				double summed_x = 0;

@@ -144,7 +144,7 @@ struct OneRingSmoothingViewer : public DynamicMeshViewer
 					summed_z += _mesh.vertices[neighbor][2];
 				}
 
-				// average it out and subtract mesh value to find d_lta phi
+				// average it out and subtract mesh value to find delta phi
 				double avg_x = summed_x / (double) neighbors[i].size();
 				double avg_y = summed_y / (double) neighbors[i].size();
 				double avg_z = summed_z / (double) neighbors[i].size();

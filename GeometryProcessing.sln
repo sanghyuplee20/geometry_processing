@@ -10,11 +10,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{02EA
 		Include\Mesh.h = Include\Mesh.h
 		Include\Mesh.inl = Include\Mesh.inl
 		Include\PreProcessing.h = Include\PreProcessing.h
+		Include\RiemannianMesh.h = Include\RiemannianMesh.h
+		Include\RiemannianMesh.inl = Include\RiemannianMesh.inl
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OneRingSmoothing", "OneRingSmoothing\OneRingSmoothing.vcxproj", "{22C7D957-4F3E-4BFD-85B5-5A52B1AA31B4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CombinatorialSmoothing", "CombinatorialSmoothing\CombinatorialSmoothing.vcxproj", "{D2D471DD-C81B-4A74-9D50-BC1184CE5F2F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LaplacianSmoothing", "LaplacianSmoothing\LaplacianSmoothing.vcxproj", "{B0C19E46-8376-4D69-AC23-B2D68791C47A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OneRingAveraging", "OneRingAveraging\OneRingAveraging.vcxproj", "{22C7D957-4F3E-4BFD-85B5-5A52B1AA31B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +28,22 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D2D471DD-C81B-4A74-9D50-BC1184CE5F2F}.Debug|x64.ActiveCfg = Debug|x64
+		{D2D471DD-C81B-4A74-9D50-BC1184CE5F2F}.Debug|x64.Build.0 = Debug|x64
+		{D2D471DD-C81B-4A74-9D50-BC1184CE5F2F}.Debug|x86.ActiveCfg = Debug|Win32
+		{D2D471DD-C81B-4A74-9D50-BC1184CE5F2F}.Debug|x86.Build.0 = Debug|Win32
+		{D2D471DD-C81B-4A74-9D50-BC1184CE5F2F}.Release|x64.ActiveCfg = Release|x64
+		{D2D471DD-C81B-4A74-9D50-BC1184CE5F2F}.Release|x64.Build.0 = Release|x64
+		{D2D471DD-C81B-4A74-9D50-BC1184CE5F2F}.Release|x86.ActiveCfg = Release|Win32
+		{D2D471DD-C81B-4A74-9D50-BC1184CE5F2F}.Release|x86.Build.0 = Release|Win32
+		{B0C19E46-8376-4D69-AC23-B2D68791C47A}.Debug|x64.ActiveCfg = Debug|x64
+		{B0C19E46-8376-4D69-AC23-B2D68791C47A}.Debug|x64.Build.0 = Debug|x64
+		{B0C19E46-8376-4D69-AC23-B2D68791C47A}.Debug|x86.ActiveCfg = Debug|Win32
+		{B0C19E46-8376-4D69-AC23-B2D68791C47A}.Debug|x86.Build.0 = Debug|Win32
+		{B0C19E46-8376-4D69-AC23-B2D68791C47A}.Release|x64.ActiveCfg = Release|x64
+		{B0C19E46-8376-4D69-AC23-B2D68791C47A}.Release|x64.Build.0 = Release|x64
+		{B0C19E46-8376-4D69-AC23-B2D68791C47A}.Release|x86.ActiveCfg = Release|Win32
+		{B0C19E46-8376-4D69-AC23-B2D68791C47A}.Release|x86.Build.0 = Release|Win32
 		{22C7D957-4F3E-4BFD-85B5-5A52B1AA31B4}.Debug|x64.ActiveCfg = Debug|x64
 		{22C7D957-4F3E-4BFD-85B5-5A52B1AA31B4}.Debug|x64.Build.0 = Debug|x64
 		{22C7D957-4F3E-4BFD-85B5-5A52B1AA31B4}.Debug|x86.ActiveCfg = Debug|Win32

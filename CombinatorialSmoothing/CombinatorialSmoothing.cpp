@@ -88,10 +88,22 @@ struct CombinatorialSmoothingViewer : public DynamicMeshViewer
 		// Set the combinatorial Laplacian here
 		Miscellany::PerformanceMeter pMeter( '.' );
 
-		////////////////////////////////////////////
-		// [IMPLEMENT SOLVER INITIALIZATION HERE] //
-		MK_WARN_ONCE( "Solver not initialized" );
-		////////////////////////////////////////////
+
+		int n = _mesh.vertices.size();
+		std::vector< Eigen::Triplet<double> > triplets;
+		for (auto triangle : _mesh.triangles) {
+			for (int i = 0; i < 3; i++) {
+				int vertex1 = triangle[i];
+				int vertex2 = triangle[(i + 1) % 3];
+				triplets.push_back(Eigen::Triplet<double>(vertex1, vertex2, -1.0));
+				triplets.push_back(Eigen::Triplet<double>(vertex2, vertex1, -1.0));
+				triplets.push_back(Eigen::Triplet<double>(vertex1, vertex1, 1.0));
+				triplets.push_back(Eigen::Triplet<double>(vertex2, vertex2, 1.0));
+			}
+		}
+		_L.resize(n, n);
+		_L.setFromTriplets(triplets.begin(), triplets.end());
+		_solver.compute(_Id + _stepSize * _L);
 
 		std::cout << pMeter( "Set up system" ) << std::endl;
 	}
@@ -99,11 +111,26 @@ struct CombinatorialSmoothingViewer : public DynamicMeshViewer
 	// Performs the averaging of the geometry/signal
 	void animate( void )
 	{
+		int n = _mesh.vertices.size();
+		Eigen::MatrixXd P (n, 3);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 3; j++) {
+				P(i, j) = _mesh.vertices[i][j];
+			}
+		}
+		
+		Eigen::MatrixXd P_new;
+		if (_implicit) {
+			P_new = _solver.solve(P);
+		} else {
+			P_new = (_Id - _stepSize * _L) * P; 
+		}
 
-		////////////////////////////////////////////
-		// [IMPLEMENT VERTEX UPDATE HERE] //
-		MK_WARN_ONCE( "Vertex update not initialized" );
-		////////////////////////////////////////////
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 3; j++) {
+				_mesh.vertices[i][j] = P_new(i, j);
+			}
+		}
 
 		visualizationNeedsUpdating();
 	}
@@ -126,7 +153,7 @@ int main( int argc , char* argv[] )
 		return EXIT_FAILURE;
 	}
 
-	DynamicMeshViewer::OutputMouseInterfaceControls( std::cout , false );
+	DynamicMeshViewer::OutputMouseInterfaceControls( std::cout );
 
 	Mesh mesh( In.value );
 	std::cout << "Vertices / Triangles: " << mesh.vertices.size() << " / " << mesh.triangles.size() << std::endl;
